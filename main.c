@@ -27,30 +27,58 @@ void strip(char *input, char *num1, char *num2, char *op) {
 }
 
 int fbin(char *num) {
+    int f = 0;
+    if (num[0] == '-') {
+        f = 1;
+        num++;
+    }
     int res = 0;
     int len = strlen(num);
     for (int i = 0; i < len; ++i) {
         res <<= 1;
         res += (num[i] - '0');
     }
+    if (f) {
+        return -res;
+    }
     return res;
 }
 
 char *tbin(int num) {
-    int i = 0;
     char *res = NULL;
-    while (num > 0) {
+    if (num == 0) {
+        res = realloc(res, (2)*sizeof(char));
+        res[0] = '0';
+        res[1] = '\0';
+        return res;
+    }
+    int num1 = (num > 0) ? num : -num;
+    int i = 0;
+    while (num1 > 0) {
         res = realloc(res, (i+1)*sizeof(char));
-        res[i] = (char)(num % 2) + '0';
-        num >>= 1;
+        res[i] = (char)(num1 % 2) + '0';
+        num1 >>= 1;
         i++;
     }
-    res[i] = '\0';
-    strrev(res);
+    if (num > 0) {
+        res = realloc(res, (i+1)*sizeof(char));
+        res[i] = '\0';
+        strrev(res);
+    }else{
+        res = realloc(res, (i+2)*sizeof(char));
+        res[i] = '-';
+        res[i+1] = '\0';
+        strrev(res);
+    }
     return res;
 }
 
 int foct(char *num) {
+    int f = 0;
+    if (num[0] == '-') {
+        f = 1;
+        num++;
+    }
     num++;
     int res = 0;
     int len = strlen(num);
@@ -58,24 +86,54 @@ int foct(char *num) {
         res <<= 3;
         res += (num[i] - '0');
     }
+    if (f) {
+        return -res;
+    }
     return res;
 }
 
 char *toct(int num) {
-    int i = 0;
     char *res = NULL;
-    while (num > 0) {
+    if (num == 0) {
+        res = realloc(res, (2)*sizeof(char));
+        res[0] = '0';
+        res[1] = '\0';
+        return res;
+    }
+    int num1 = (num > 0) ? num : -num;
+    int i = 0;
+    if (num == 0) {
+        res = realloc(res, (2)*sizeof(char));
+        res[0] = '0';
+        res[1] = '\0';
+    }
+    while (num1 > 0) {
         res = realloc(res, (i+1)*sizeof(char));
-        res[i] = (char)(num % 8) + '0';
-        num >>= 3;
+        res[i] = (char)(num1 % 8) + '0';
+        num1 >>= 3;
         i++;
     }
-    res[i] = '\0';
-    strrev(res);
+    if (num > 0) {
+        res = realloc(res, (i+2)*sizeof(char));
+        res[i] = '0';
+        res[i+1] = '\0';
+        strrev(res);
+    }else{
+        res = realloc(res, (i+3)*sizeof(char));
+        res[i] = '0';
+        res[i+1] = '-';
+        res[i+2] = '\0';
+        strrev(res);
+    }
     return res;
 }
 
 int fhex(char *num) {
+    int f = 0;
+    if (num[0] == '-') {
+        f = 1;
+        num++;
+    }
     num++;
     num++;
     int res = 0;
@@ -88,25 +146,108 @@ int fhex(char *num) {
             res += (tolower(num[i]) - 'a' + 10);
         }
     }
+    if (f) {
+        return -res;
+    }
     return res;
 }
 
 char *thex(int num) {
-    int i = 0;
     char *res = NULL;
-    while (num > 0) {
+    if (num == 0) {
+        res = realloc(res, (2)*sizeof(char));
+        res[0] = '0';
+        res[1] = '\0';
+        return res;
+    }
+    int num1 = (num > 0) ? num : -num;
+    int i = 0;
+    if (num == 0) {
+        res = realloc(res, (2)*sizeof(char));
+        res[0] = '0';
+        res[1] = '\0';
+    }
+    while (num1 > 0) {
         res = realloc(res, (i+1)*sizeof(char));
-        if (num % 16 < 10) {
-            res[i] = (char)(num % 16) + '0';
+        if (num1 % 16 < 10) {
+            res[i] = (char)(num1 % 16) + '0';
         }else{
-            res[i] = (char)(num % 16)- 10 + 'a';
+            res[i] = (char)(num1 % 16)- 10 + 'a';
         }
-        num >>= 4;
+        num1 >>= 4;
         i++;
     }
-    res[i] = '\0';
-    strrev(res);
+    if (num > 0) {
+        res = realloc(res, (i+3)*sizeof(char));
+        res[i] = 'x';
+        res[i+1] = '0';
+        res[i+2] = '\0';
+        strrev(res);
+    }else{
+        res = realloc(res, (i+4)*sizeof(char));
+        res[i] = 'x';
+        res[i+1] = '0';
+        res[i+2] = '-';
+        res[i+3] = '\0';
+        strrev(res);
+    }
     return res;
+}
+
+int count(int num1, int num2, char op) {
+    switch (op) {
+        case '+':
+            return num1 + num2;
+        case '-':
+            return num1 - num2;
+        case '*':
+            return num1 * num2;
+        case '%':
+            return num1 % num2;
+        case '&':
+            if (num1 < 0 || num2 < 0) {
+                printf("Error\n");
+                exit(0);
+            }
+            return num1 & num2;
+        case '|':
+            if (num1 < 0 || num2 < 0) {
+                printf("Error\n");
+                exit(0);
+            }
+            return num1 | num2;
+        case '^':
+            if (num1 < 0 || num2 < 0) {
+                printf("Error\n");
+                exit(0);
+            }
+            return num1 ^ num2;
+        default:
+            return 0;
+    }
+}
+
+int type(char *num) {
+    if (num[0] == '-') {
+        num++;
+    }
+    if (strlen(num) == 1) {
+        return 0;
+    }
+    if (num[0] == '0' && num[1] == 'x') {
+        return 2;
+    }
+    if (num[0] == '0') {
+        return 1;
+    }
+    return 0;
+}
+
+int compare(char *num1, char *num2) {
+    if (type(num1) == type(num2)) {
+        return 1;
+    }
+    return 0;
 }
 
 char *calc(char *input) {
@@ -116,16 +257,31 @@ char *calc(char *input) {
     if (input[0] == '~') {
         op = input[0];
         strcpy(num1, input+1);
+        int tp = type(num1);
+        switch (tp) {
+            case 0:
+                return tbin(~fbin(num1));
+            case 1:
+                return toct(~foct(num1));
+            case 2:
+                return thex(~fhex(num1));
+        }
     }else{
         strip(input, num1, num2, &op);
+        int tp = type(num1);
+        if (compare(num1, num2)) {
+            switch (tp) {
+            case 0:
+                return tbin(count(fbin(num1), fbin(num2), op));
+            case 1:
+                return toct(count(foct(num1), foct(num2), op));
+            case 2:
+                return thex(count(fhex(num1), fhex(num2), op));
+            }
+        }else{
+            return NULL;
+        }
     }
-    printf("%s %s %c\n", num1, num2, op);
-    printf("fbin(10) : %i\n", fbin("10"));
-    printf("tbin(8) : %s\n", tbin(8));
-    printf("foct(10) : %i\n", foct("010"));
-    printf("toct(8) : %s\n", toct(8));
-    printf("fhex(10) : %i\n", fhex("0x10"));
-    printf("thex(8) : %s\n", thex(8));
 }
 
 int main() {
@@ -134,6 +290,19 @@ int main() {
     char *pos = strchr(input, '\n');
     *pos = '\0';
     char *res = calc(input);
+    if (res == NULL) {
+        printf("Systems of numbers does not match\n");
+    }else{
+        int tp = type(res);
+        if (tp == 0) {
+            printf("%s (%i)\n", res, fbin(res));
+        }else if (tp == 1) {
+            printf("%s (%i)\n", res, foct(res));
+        }else if (tp == 2) {
+            printf("%s (%i)\n", res, fhex(res));
+        }
+    }
+    free(res);
     free(input);
     return 0;
 }
