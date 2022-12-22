@@ -15,6 +15,10 @@ int foct(char *num) {
     int res = 0;
     int len = strlen(num);
     for (int i = 0; i < len; ++i) {
+        if (!((num[i] >= '0') && (num[i] <= '7'))) {
+            printf("Error\n");
+            exit(0);
+        }
         res <<= 3;
         res += (num[i] - '0');
     }

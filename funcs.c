@@ -58,6 +58,8 @@ int count(int num1, int num2, char op) {
             }
             return num1 ^ num2;
         default:
+            printf("Error\n");
+            exit(0);
             return 0;
     }
 }
@@ -106,12 +108,12 @@ char *calc(char *input) {
         int tp = type(num1);
         if (compare(num1, num2)) {
             switch (tp) {
-            case 0:
-                return tbin(count(fbin(num1), fbin(num2), op));
-            case 1:
-                return toct(count(foct(num1), foct(num2), op));
-            case 2:
-                return thex(count(fhex(num1), fhex(num2), op));
+                case 0:
+                    return tbin(count(fbin(num1), fbin(num2), op));
+                case 1:
+                    return toct(count(foct(num1), foct(num2), op));
+                case 2:
+                    return thex(count(fhex(num1), fhex(num2), op));
             }
         }else{
             return NULL;

@@ -14,6 +14,10 @@ int fbin(char *num) {
     int res = 0;
     int len = strlen(num);
     for (int i = 0; i < len; ++i) {
+        if (!((num[i] >= '0') && (num[i] <= '1'))) {
+            printf("Error\n");
+            exit(0);
+        }
         res <<= 1;
         res += (num[i] - '0');
     }
